@@ -20,14 +20,16 @@ var (
 
 func init() {
 	rootCmd.AddCommand(generateCmd)
+	generateCmd.Flags().Bool("stage", false, "use it to stage the changes as well")
 }
 
 func generate(cmd *cobra.Command, args []string) {
+	stage, _ := cmd.Flags().GetBool("stage")
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	if len(apiKey) == 0 {
 		fmt.Println("OPENAI_API_KEY is not set")
 		os.Exit(1)
 	}
 
-	conversation.NewConversation(openai.NewGptClient(apiKey)).StartConversation()
+	conversation.NewConversation(openai.NewGptClient(apiKey)).StartConversation(stage)
 }
