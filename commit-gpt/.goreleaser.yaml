@@ -38,6 +38,17 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+brews:
+  -
+    name: commit-gpt
+    homepage: "https://github.com/ohmpatel1997/CommitGPT"
+    tap:
+      owner: user
+      name: CommitGPT
+      branch: main
+    commit_author:
+      name: ohm patel
+      email: ohm.patel1997@gmail.com
 
 # The lines beneath this are called `modelines`. See `:help modeline`
 # Feel free to remove those if you don't want/use them.
