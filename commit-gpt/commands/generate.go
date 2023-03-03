@@ -31,5 +31,6 @@ func generate(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
+	fmt.Println("testing the ai generated commit message")
 	conversation.NewConversation(openai.NewGptClient(apiKey)).StartConversation(stage)
 }
