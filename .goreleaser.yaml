@@ -7,12 +7,15 @@ before:
     # you may remove this if you don't need go generate
     - go generate ./...
 builds:
-  - env:
+  -
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
       - windows
       - darwin
+    main: "./commit-gpt/"
+    binary: commit-gpt
 
 archives:
   - format: tar.gz
