@@ -8,22 +8,31 @@ import (
 	"strings"
 	"time"
 
+	"github.com/fatih/color"
 	"github.com/ohmpatel1997/CommitGPT/pkg/openai"
 	"github.com/ohmpatel1997/CommitGPT/pkg/utils"
 	"github.com/pkg/errors"
 )
 
 type Conversation struct {
-	Client *openai.GptClient
+	Client *openai.Client
 }
 
-func NewConversation(client *openai.GptClient) *Conversation {
+func NewConversation(client *openai.Client) *Conversation {
 	return &Conversation{
 		Client: client,
 	}
 }
 
-func (c *Conversation) StartConversation() {
+func (c *Conversation) StartConversation(stage bool) {
+	if stage {
+		err := stageAllFiles()
+		if err != nil {
+			fmt.Println(errors.Wrap(err, "failed to stage files	"))
+			os.Exit(1)
+		}
+	}
+
 	// prepare the diff
 	diff, err := getDiff()
 	if err != nil {
@@ -62,14 +71,21 @@ func (c *Conversation) StartConversation() {
 			fmt.Println("I can not understand the message, please try again")
 			os.Exit(1)
 		} else {
-			fmt.Println("Message: ", commitMessage)
+			fmt.Print("\n")
+			color.New(color.FgHiRed).Print("Message: ")
+			color.New(color.FgHiGreen).Print(commitMessage + "\n")
 		}
 
 		userRequest := ""
-		for {
-			fmt.Println("Enter `yes` if you want to use the message or press Ctrl+C to exit")
-			fmt.Println("You can ask to improve the message by typing your response:")
+		color.New(color.FgHiWhite).Print("\n\nEnter")
+		color.New(color.FgHiYellow).Print(" `yes` ")
+		color.New(color.FgHiWhite).Print("if you want to use the message or press")
+		color.New(color.FgHiYellow).Print(" Ctrl+C ")
+		color.New(color.FgHiWhite).Print("to exit.\n")
 
+		fmt.Println("you can also ask to improve the message")
+		for {
+			color.New(color.FgHiWhite).Print("\nInput: ")
 			reader := bufio.NewReader(os.Stdin)
 			userRequest, err = reader.ReadString('\n')
 			if err != nil {
@@ -133,4 +149,13 @@ func getDiff() (string, error) {
 	)
 
 	return strings.TrimSpace(out.String()), nil
+}
+
+func stageAllFiles() error {
+	out := strings.Builder{}
+	err := utils.Run("git",
+		utils.WithArgs("add", "."),
+		utils.WithStdOut(&out),
+	)
+	return err
 }

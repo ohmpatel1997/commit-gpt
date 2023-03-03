@@ -14,12 +14,12 @@ type Message struct {
 	Content string `json:"content"`
 }
 
-type ChatCompleteRequest struct {
+type Request struct {
 	Model    string     `json:"model"`
 	Messages []*Message `json:"messages"`
 }
 
-type ChatCompleteChoice struct {
+type Choice struct {
 	Index   int `json:"index"`
 	Message struct {
 		Role    string `json:"role"`
@@ -28,38 +28,35 @@ type ChatCompleteChoice struct {
 	FinishReason string `json:"finish_reason"`
 }
 
-type ChatCompleteResponse struct {
-	Id      string               `json:"id"`
-	Object  string               `json:"object"`
-	Created int                  `json:"created"`
-	Choices []ChatCompleteChoice `json:"choices"`
+type Response struct {
+	Id      string   `json:"id"`
+	Object  string   `json:"object"`
+	Created int      `json:"created"`
+	Choices []Choice `json:"choices"`
 }
 
-type GptClient struct {
+type Client struct {
 	apiKey     string
 	httpClient *http.Client
 }
 
-const chatModel = "gpt-3.5-turbo"
-const chatEndpoint = "https://api.openai.com/v1/chat/completions"
-
-func NewGptClient(apiKey string) *GptClient {
-	return &GptClient{
+func NewGptClient(apiKey string) *Client {
+	return &Client{
 		apiKey:     apiKey,
 		httpClient: http.DefaultClient,
 	}
 }
 
-func (c *GptClient) ChatComplete(ctx context.Context, messages []*Message) (string, error) {
+func (c *Client) ChatComplete(ctx context.Context, messages []*Message) (string, error) {
 
-	request := &ChatCompleteRequest{
-		Model:    chatModel,
+	request := &Request{
+		Model:    "gpt-3.5-turbo",
 		Messages: messages,
 	}
 
 	payload, _ := json.Marshal(request)
 	payloadReader := bytes.NewReader(payload)
-	req, err := http.NewRequest("POST", chatEndpoint, payloadReader)
+	req, err := http.NewRequestWithContext(ctx, "POST", "https://api.openai.com/v1/chat/completions", payloadReader)
 	if err != nil {
 		return "", err
 	}
@@ -79,7 +76,7 @@ func (c *GptClient) ChatComplete(ctx context.Context, messages []*Message) (stri
 		return "", err
 	}
 
-	var response ChatCompleteResponse
+	var response Response
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		return "", err
@@ -89,26 +86,9 @@ func (c *GptClient) ChatComplete(ctx context.Context, messages []*Message) (stri
 		return "", nil
 	}
 
-	firstChoice := response.Choices[0].Message.Content
-	firstChoice = strings.TrimSpace(firstChoice)
-	firstChoice = strings.Trim(firstChoice, `"`)
+	choice := response.Choices[0].Message.Content
+	choice = strings.Trim(strings.TrimSpace(choice), `"`)
 
-	return firstChoice, nil
+	return choice, nil
 
-}
-
-func (c *GptClient) SingleQuestion(question string) (string, error) {
-	message := []*Message{
-		{
-			Role:    "user",
-			Content: question,
-		},
-	}
-
-	response, err := c.ChatComplete(context.Background(), message)
-	if err != nil {
-		return "", err
-	}
-
-	return response, nil
 }
