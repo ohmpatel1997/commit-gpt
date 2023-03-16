@@ -47,8 +47,8 @@ brews:
     download_strategy: CurlDownloadStrategy
     folder: Formula
     tap:
-      owner: user
-      name: commit-gpt
+      owner: ohmpatel1997
+      name: CommitGPT
       branch: main
     commit_author:
       name: ohm patel
