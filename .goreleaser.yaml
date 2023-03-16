@@ -48,7 +48,7 @@ brews:
     download_strategy: CurlDownloadStrategy
     tap:
       owner: ohmpatel1997
-      name: CommitGPT
+      name: homebrew-commit-gpt
       branch: main
     commit_author:
       name: ohm patel
