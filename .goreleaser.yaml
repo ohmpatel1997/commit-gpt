@@ -44,10 +44,11 @@ changelog:
 brews:
   -
     name: commit-gpt
-    homepage: "https://github.com/ohmpatel1997/CommitGPT"
+    download_strategy: CurlDownloadStrategy
+    folder: Formula
     tap:
       owner: user
-      name: CommitGPT
+      name: commit-gpt
       branch: main
     commit_author:
       name: ohm patel
