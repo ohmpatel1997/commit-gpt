@@ -46,7 +46,6 @@ brews:
     name: commit-gpt
     homepage: https://github.com/ohmpatel1997/CommitGPT
     download_strategy: CurlDownloadStrategy
-    folder: Formula
     tap:
       owner: ohmpatel1997
       name: CommitGPT
