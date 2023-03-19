@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/ohmpatel1997/CommitGPT/commit-gpt/commands"
+	"github.com/ohmpatel1997/CommitGPT/commands"
 )
 
 func main() {
