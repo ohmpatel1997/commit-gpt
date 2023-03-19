@@ -42,7 +42,7 @@ brews:
   -
     name: commit-gpt
     homepage: https://github.com/ohmpatel1997/commit-gpt
-    download_strategy: GitHubPrivateRepositoryReleaseDownloadStrategy
+    download_strategy: CurlDownloadStrategy
     tap:
       owner: ohmpatel1997
       name: homebrew-commit-gpt
